@@ -24,16 +24,23 @@ subtest 'use Foo 0.01' => sub {
         is $tokens[0]->yylval, 1;
     };
 
+    my $word_token_name;
+    if ($^V ge 'v5.25.3') {
+        $word_token_name = 'BAREWORD';
+    } else {
+        $word_token_name = 'WORD';
+    }
+
     subtest 'second' => sub {
         isa_ok $tokens[1], 'Perl::Lexer::Token';
-        is $tokens[1]->name,   'WORD';
+        is $tokens[1]->name,   $word_token_name;
         is $tokens[1]->type,   TOKENTYPE_OPVAL;
         is $tokens[1]->yylval_svop, '0.01';
     };
 
     subtest 'third' => sub {
         isa_ok $tokens[2], 'Perl::Lexer::Token';
-        is $tokens[2]->name,   'WORD';
+        is $tokens[2]->name,   $word_token_name;
         is $tokens[2]->type,   TOKENTYPE_OPVAL;
         is $tokens[2]->yylval_svop, 'Foo';
     };
